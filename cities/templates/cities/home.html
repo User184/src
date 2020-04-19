@@ -10,5 +10,13 @@
         </div>
 
     </div>
+
+<form action="" method="POST" > {% csrf_token %}
+    {{form.as_p}}
+    <!--{{Город:<br>
+    <input type="text" name="name"><br>}}-->
+    <br>
+    <input type="submit" value="Сохранить">
+</form>
 {% endblock%} 
 
