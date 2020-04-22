@@ -4,19 +4,50 @@
     <h1 class="display-4">Города</h1>
     <div class="row">
         <div class = 'col-md-6'>
+            <table class="table table-striped">
+            <tbody>
             {% for object in objects_list %}
-                <p> {{object.name}} </p>
+                <tr>
+                <td> 
+                    <a href='{% url "city:detail" pk=object.pk %}'>
+                        {{object.name}} 
+                    </a>
+                </td>
+                <td> 
+                    <a href='{% url "city:update" pk=object.pk %}'>
+                        <button type="button" class="btn btn-secondary btn-sm">Редактировать</button> 
+                    </a>
+                </td>
+                <td> 
+                    <a href='{% url "city:delete" pk=object.pk %}'>
+                        <button type="button" class="btn btn-dark btn-sm">Удалить</button> 
+                    </a>
+                </td>
+                </tr>
             {% endfor %}
+            </tbody>
+            </table>
         </div>
 
     </div>
 
-<form action="" method="POST" > {% csrf_token %}
+   
+    <div class="row">
+        <div class = 'col-md-6'>
+            <a href='{% url "city:add" %}'>
+                <button type="button" class="btn btn-secondary btn-sm">Добавить город</button> 
+            </a>
+        </div>
+    </div>
+
+    {% endblock%}
+
+<!--   <form action="" method="POST" > {% csrf_token %}
     {{form.as_p}}
-    <!--{{Город:<br>
-    <input type="text" name="name"><br>}}-->
+    {{Город:<br>
+    <input type="text" name="name"><br>}}
     <br>
     <input type="submit" value="Сохранить">
-</form>
-{% endblock%} 
+</form>  -->
+
 
