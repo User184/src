@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block title%} Города {% endblock%}
 {% block content%}
-    <h1 class="display-4">Города</h1>
+    <h1 class="display-4 text-center my-4">Города</h1>
     <div class="row">
-        <div class = 'col-md-6'>
+        <div class = 'col-md-6 mx-auto'>
             <table class="table table-striped">
             <tbody>
             {% for object in objects_list %}
@@ -27,13 +27,52 @@
             {% endfor %}
             </tbody>
             </table>
+            <!--<div class="pagination">
+                <span class="step-links">
+                    {% if objects_list.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ objects_list.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ objects_list.number }} of {{ objects_list.paginator.num_pages }}.
+                    </span>
+
+                    {% if objects_list.has_next %}
+                        <a href="?page={{ objects_list.next_page_number }}">next</a>
+                        <a href="?page={{ objects_list.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>--> 
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if objects_list.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ objects_list.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+
+                    {% for page in objects_list.paginator.page_range %}
+                    {% if page == objects_list.number %}
+                        <li class="page-item active">
+                            <a class="page-link" href="#"> {{page}} <span class="sr-only">(current) </span> </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{page}}">{{page}} </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                    {% if objects_list.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ objects_list.next_page_number }}">Next </a></li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
 
     </div>
 
    
     <div class="row">
-        <div class = 'col-md-6'>
+        <div class = 'col-md-6 mx-auto'>
             <a href='{% url "city:add" %}'>
                 <button type="button" class="btn btn-secondary btn-sm">Добавить город</button> 
             </a>
