@@ -27,3 +27,4 @@ class Train(models.Model):
             raise ValidationError('Измените время в пути.')
 
         return super(Train, self).clean(*args, **kwargs)
+ 
