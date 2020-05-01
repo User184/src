@@ -32,7 +32,7 @@ class TrainDetailView(DetailView):
 class TrainUpdateView(SuccessMessageMixin, UpdateView):
     model = Train
     form_class = TrainForm
-    template_name = 'trains/Update.html'
+    template_name = 'trains/update.html'
     success_url = reverse_lazy('train:home')
     success_message = 'Номер поезда отредактирован.'
 
