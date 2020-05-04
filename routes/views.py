@@ -2,6 +2,21 @@ from django.shortcuts import render
 from django.contrib import messages
 from .forms import *
 
+def dfs_paths(graph, start, goal):
+    """Ф-ция поиска всех возможных маршрутов из одного города в другой.
+       Вариант посещения одного  и того же города более одного разаб
+       не рассматривается"""
+    stack = [(start, [start])]
+    while stack:
+        (vertex, path) = stack.pop()
+        if vertex in graph.keys():
+            for next_ in graph[vertex] - set(path):
+                if next_ == goal:
+                    yield path + [next_]
+                else:
+                    stack.append((next_, path + [next_]))
+
+
 def home(request):
     form = RouteForm()
     return render(request, 'routes/home.html', {'form': form})
