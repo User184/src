@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib import messages
+from trains.models import Train
 from .forms import *
 
 def dfs_paths(graph, start, goal):
@@ -16,6 +17,15 @@ def dfs_paths(graph, start, goal):
                 else:
                     stack.append((next_, path + [next_]))
 
+def get_graf():
+    qs = Train.objects.values('from_city')
+    from_city_set = set(i['from_city'] for i in qs)
+    graph = {}
+    for city in from_city_set:
+        trains = Train.objects.filter(from_city = city).values('to_city')
+        tmp = set(i['to_city'] for i in trains)
+        graph[city] = tmp
+    return graph
 
 def home(request):
     form = RouteForm()
