@@ -5,7 +5,7 @@ from .forms import *
 
 def dfs_paths(graph, start, goal):
     """Ф-ция поиска всех возможных маршрутов из одного города в другой.
-       Вариант посещения одного  и того же города более одного разаб
+       Вариант посещения одного  и того же города более одного раза
        не рассматривается"""
     stack = [(start, [start])]
     while stack:
@@ -17,7 +17,7 @@ def dfs_paths(graph, start, goal):
                 else:
                     stack.append((next_, path + [next_]))
 
-def get_graf():
+def get_graph():
     qs = Train.objects.values('from_city')
     from_city_set = set(i['from_city'] for i in qs)
     graph = {}
@@ -36,6 +36,25 @@ def find_routes(request):
         form = RouteForm(request.POST or None)
         if form.is_valid():
             data = form.changed_data
+            # assert False
+            from_city = data['from_city']
+            to_city = data['to_city']
+            across_cities_from = data['across_cities']
+            traveling_time = data['traveling_time']
+            graph = get_graph()
+            all_ways = list(dfs_paths(graph, from_city.id, to_city.id))
+            if across_cities_from:
+                across_cities = [city.id for point in across_cities_from]
+                right_ways = []
+                for way in all_ways:
+                    if all(point in way for point in across_cities):
+                        right_ways.append(way)
+                if not right_ways:
+                    messages.error(request,'Маршрут не возможен')
+                    return render(request, 'routes/home.html', {'form': form})
+            else:
+                right_ways = all_ways
+
         return render(request, 'routes/home.html', {'form': form})
     else:
         messages.error(request,'Создайте маршрут')

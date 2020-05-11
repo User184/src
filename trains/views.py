@@ -12,7 +12,7 @@ from .forms import TrainForm
 
 def home(request):
     trains = Train.objects.all()  
-    paginator = Paginator(trains, 3) 
+    paginator = Paginator(trains, 8) 
     page = request.GET.get('page')
     trains = paginator.get_page(page)
     return render(request, 'trains/home.html', {'objects_list': trains, }) 
