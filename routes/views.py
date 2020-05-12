@@ -35,25 +35,51 @@ def find_routes(request):
     if request.method == "POST":
         form = RouteForm(request.POST or None)
         if form.is_valid():
-            data = form.changed_data
+            data = form.cleaned_data
             # assert False
             from_city = data['from_city']
             to_city = data['to_city']
-            across_cities_from = data['across_cities']
+            across_cities_form = data['across_cities']
             traveling_time = data['traveling_time']
             graph = get_graph()
             all_ways = list(dfs_paths(graph, from_city.id, to_city.id))
-            if across_cities_from:
-                across_cities = [city.id for point in across_cities_from]
+            if len(all_ways) == 0:
+                messages.error(request, 'Маршрута, удовлетворяющего условиям не существует.')
+                return render(request, 'routes/home.html', {'form': form})
+            if across_cities_form:
+                across_cities = [city.id for city in across_cities_form]
                 right_ways = []
                 for way in all_ways:
                     if all(point in way for point in across_cities):
                         right_ways.append(way)
                 if not right_ways:
-                    messages.error(request,'Маршрут не возможен')
+                    messages.error(request,'Маршрут через эти города не возможен')
                     return render(request, 'routes/home.html', {'form': form})
             else:
                 right_ways = all_ways
+
+            trains = []
+            for route in right_ways:
+                tmp = {}
+                tmp['trains'] = []
+                total_time = 0
+                for index in range(len(route)-1):
+                    qs = Train.objects.filter(from_city=route[index], to_city=route[index+1])
+                    qs = qs.order_by('travel_time').first()
+                    total_time += qs.travel_time
+                    tmp['trains'].append(qs)
+                tmp['total_time'] = total_time
+                if total_time <= traveling_time:
+                    trains.append(tmp)
+            if not trains:
+                messages.error(request,'Время в пути, больше заданного.')
+                return render(request, 'routes/home.html', {'form': form})
+
+            context = {}
+            form = RouteForm()
+            context['form'] = form
+            context['ways'] = trains
+            return render(request, 'routes/home.html', context)
 
         return render(request, 'routes/home.html', {'form': form})
     else:
