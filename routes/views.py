@@ -75,10 +75,30 @@ def find_routes(request):
                 messages.error(request,'Время в пути, больше заданного.')
                 return render(request, 'routes/home.html', {'form': form})
 
+            routes = []
+            cities = {'from_city': from_city.name, 'to_city': to_city.name}
+            for tr in trains:
+                routes.append({'route': tr['trains'], 
+                                'total_time': tr['total_time'],
+                                'from_city': from_city.name,
+                                'to_city': to_city.name})
+            sorted_routes = []
+            if len(routes) == 1:
+                sorted_routes = routes
+            else:
+                times = list(set(x['total_time'] for x in routes))
+                times = sorted(times)
+                for time in times:
+                    for route in routes:
+                        if time == route['total_time']:
+                            sorted_routes.append(route)
+
             context = {}
             form = RouteForm()
             context['form'] = form
-            context['ways'] = trains
+            context['routes'] = sorted_routes
+            context['cities'] = cities
+            
             return render(request, 'routes/home.html', context)
 
         return render(request, 'routes/home.html', {'form': form})
