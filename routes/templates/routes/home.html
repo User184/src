@@ -12,7 +12,7 @@
             {% endif %} из г.{{cities.from_city}} в г.{{cities.to_city}} </h3>
             <hr>
             {% for route in routes %}
-                <form action="" method="get">
+                <form action="{% url 'add_route' %}" method="get">
                     <input type='hidden' name='from_city' value='{{route.from_city}}'/>
                     <input type='hidden' name='to_city' value='{{route.to_city}}'/>
                     <input type='hidden' name='travel_times' value='{{route.total_time}}'/>
